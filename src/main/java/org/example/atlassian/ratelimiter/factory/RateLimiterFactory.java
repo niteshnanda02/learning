@@ -11,6 +11,7 @@ public class RateLimiterFactory {
             case SLIDING_WINDOW_LOG -> new SlidingWindowLogCounter(maxRequest, windowSizeInSeconds);
             case FIXED -> new FixedWindowCounter(maxRequest, windowSizeInSeconds);
             case CREDIT_TOKEN_BUCKET -> new CreditBasedTokenBucket(maxRequest, windowSizeInSeconds, maxRequest/2);
+            case LEAK -> new LeakyBucket(maxRequest, maxRequest/windowSizeInSeconds);
             default -> throw new RateLimiterStrategyNotFoundException(rateLimiterEnum.name());
         };
     }

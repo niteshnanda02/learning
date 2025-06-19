@@ -10,17 +10,19 @@ public class CreditBasedTokenBucket extends TokenBucket{
     }
 
     @Override
-    public synchronized boolean allowRequest() {
-        boolean allowed = super.allowRequest();
-        if (allowed)
-            return true;
-        // refill the credits
-        refill();
-        if (currentCredits > 0) {
-            currentCredits--;
-            return true;
+    public boolean allowRequest() {
+        synchronized (this) {
+            boolean allowed = super.allowRequest();
+            if (allowed)
+                return true;
+            // refill the credits
+            refill();
+            if (currentCredits > 0) {
+                currentCredits--;
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     void refill(){

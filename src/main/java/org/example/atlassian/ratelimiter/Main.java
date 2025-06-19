@@ -13,14 +13,19 @@ public class Main {
         ThrotleRule rule = new ThrotleRule();
         ThrotleRuleService throtleRulesService = ThrotleRuleService.getInstance();
         throtleRulesService.createRule("client1", rule);
-        RateLimiterService rateLimiterService = new RateLimiterService(RateLimiterEnum.CREDIT_TOKEN_BUCKET);
+        RateLimiterService rateLimiterService = new RateLimiterService(RateLimiterEnum.LEAK);
 
 
         ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(5);
-
-        Runnable r = () ->{
-            System.out.println(" client1 "+Thread.currentThread().getName() + "--" + rateLimiterService.isRateLimitedUserRequest("user1")+" -- "+ Instant.now());
+        Runnable r=new Runnable(){
+            @Override
+            public void run(){
+                System.out.println(" client1 "+Thread.currentThread().getName() + "--" + rateLimiterService.isRateLimitedUserRequest("user1")+" -- "+ Instant.now());
+            }
         };
+//        Runnable r = () ->{
+//            System.out.println(" client1 "+Thread.currentThread().getName() + "--" + rateLimiterService.isRateLimitedUserRequest("user1")+" -- "+ Instant.now());
+//        };
         scheduledExecutor.scheduleAtFixedRate(r, 0, 50, TimeUnit.MILLISECONDS);
 //        for (int i = 0; i < 20; i++) {
 //            System.out.println((i+1)+" "+rateLimiterService.isRateLimitedUserRequest("user1"));
